@@ -1,8 +1,8 @@
 package infrastructure
 
 import (
-	"example.com.test/lib"
 	"github.com/dghubble/sling"
+	"github.com/wakye5815/trans-cli/lib"
 )
 
 type IbmLanguageTranslatorApiClient struct {

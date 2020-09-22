@@ -3,11 +3,11 @@ package command
 import (
 	"fmt"
 
-	"example.com.test/config"
-	"example.com.test/infrastructure"
-	"example.com.test/service"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/wakye5815/trans-cli/config"
+	"github.com/wakye5815/trans-cli/infrastructure"
+	"github.com/wakye5815/trans-cli/service"
 )
 
 var RootCommand = &cobra.Command{

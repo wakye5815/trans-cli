@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"example.com.test/command"
+	"github.com/wakye5815/trans-cli/command"
 )
 
 func main() {

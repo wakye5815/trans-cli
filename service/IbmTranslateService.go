@@ -1,8 +1,8 @@
 package service
 
 import (
-	"example.com.test/config"
-	"example.com.test/infrastructure"
+	"github.com/wakye5815/trans-cli/config"
+	"github.com/wakye5815/trans-cli/infrastructure"
 )
 
 type IbmTranslateService struct {
