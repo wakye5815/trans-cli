@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"github.com/dghubble/sling"
+	"github.com/wakye5815/trans-cli/config"
 	"github.com/wakye5815/trans-cli/lib"
 )
 
@@ -10,7 +11,7 @@ type IbmLanguageTranslatorApiClient struct {
 	version string
 }
 
-func NewIbmLanguageTranslatorApiClient(config *IbmApiConnectionConfig) *IbmLanguageTranslatorApiClient {
+func NewIbmLanguageTranslatorApiClient(config *config.IbmApiConnectionConfig) *IbmLanguageTranslatorApiClient {
 	return &IbmLanguageTranslatorApiClient{
 		sling:   lib.NewCustomSling().Base(config.Url).SetBasicAuth("apikey", config.Key),
 		version: config.Version,

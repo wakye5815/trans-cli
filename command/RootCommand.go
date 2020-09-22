@@ -4,52 +4,41 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/wakye5815/trans-cli/config"
 	"github.com/wakye5815/trans-cli/infrastructure"
 	"github.com/wakye5815/trans-cli/service"
 )
 
-var RootCommand = &cobra.Command{
-	Use:   "trans",
-	Short: "Translation words",
-	Run: func(cmd *cobra.Command, args []string) {
-		viper.SetConfigFile("./.env")
-		if err := viper.ReadInConfig(); err != nil {
-			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-				fmt.Println("file not found")
-			} else {
+func NewRootCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:   "trans",
+		Short: "Translation words",
+		Run: func(cmd *cobra.Command, args []string) {
+			appConfig, err := config.BuildAppConfig()
+			if err != nil {
 				panic(err)
 			}
-		}
 
-		enableProviderType, err := config.FindProviderType(viper.GetInt("ENABLE_PROVIDER"))
-		appConfig := &config.AppConfig{
-			SourceLanguage:     viper.GetString("SOURCE_LANGUAGE"),
-			TargetLanguage:     viper.GetString("TARGET_LANGUAGE"),
-			EnableProviderType: enableProviderType,
-		}
+			ibmApiConnectionConfig, err := config.BuildIbmApiConnnectionConfig()
+			if err != nil {
+				panic(err)
+			}
 
-		ibmApiConnectionConfig := infrastructure.NewIbmApiConnectionConfig(
-			viper.GetString("IBM_API_KEY"),
-			viper.GetString("IBM_API_URL"),
-			"2018-05-01",
-		)
+			client := infrastructure.NewIbmLanguageTranslatorApiClient(ibmApiConnectionConfig)
+			var service service.TranslateService = service.NewIbmTranslateService(appConfig, client)
 
-		client := infrastructure.NewIbmLanguageTranslatorApiClient(ibmApiConnectionConfig)
-		var service service.TranslateService = service.NewIbmTranslateService(appConfig, client)
+			availableLanguages, err := service.GetAvailableLanguages()
+			if err != nil {
+				panic(err)
+			}
 
-		availableLanguages, err := service.GetAvailableLanguages()
-		if err != nil {
-			panic(err)
-		}
+			translatedTexts, err := service.Translate("リンゴ")
+			if err != nil {
+				panic(err)
+			}
 
-		translatedTexts, err := service.Translate("リンゴ")
-		if err != nil {
-			panic(err)
-		}
-
-		fmt.Println(availableLanguages)
-		fmt.Println(translatedTexts)
-	},
+			fmt.Println(availableLanguages)
+			fmt.Println(translatedTexts)
+		},
+	}
 }
